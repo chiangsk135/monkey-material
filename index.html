@@ -2,7 +2,8 @@
     <body>
         <form action="file_upload" method="post" enctype="multipart/form-data">
             Tutor :
-            <select name="tutor">
+            <select name="tutor" required>
+                <option disabled selected value> == Select tutor == </option>
                 <option value="third">Third</option>
                 <option value="beng">Beng</option>
                 <option value="ya">Ya</option>
@@ -19,35 +20,45 @@
                 <option value="pe/ch">Pepe/Chote</option>
             </select>
             Day :
-            <select name="day">
+            <select name="day" required>
+                <option disabled selected value> == Select day == </option>
                 <option value="SAT">Saturday</option>
                 <option value="SUN">Sunday</option>
             </select>
             Time :
-            <select name="time">
+            <select name="time" required>
+                <option disabled selected value> == Select time == </option>
                 <option value="8-10">8.00-10.00</option>
                 <option value="10-12">10.00-12.00</option>
                 <option value="13-15">13.00-15.00</option>
                 <option value="15-17">15.00-17.00</option>
             </select>
-            Course :
+            <!-- Course :
             <select name="course">
                 <option value="AA111">AA111</option>
                 <option value="AB112">AB112</option>
                 <option value="BIOS12">BIOS12</option>
                 <option value="SK135">SK135</option>
-            </select>
+            </select> -->
             # :
-            <select name="number">
+            <select name="numberOfSub" required>
+                <option disabled selected value> == Select # of submission == </option>
                 <option value="1">1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
                 <option value="4">4</option>
                 <option value="5">5</option>
                 <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
             </select>
             Teaching date :
-            <select name="dated">
+            <select name="dated" required>
+                <option disabled selected value> Day </option>
                 <option value="01">01</option>
                 <option value="02">02</option>
                 <option value="03">03</option>
@@ -80,7 +91,8 @@
                 <option value="30">30</option>
                 <option value="31">31</option>
             </select>
-            <select name="datem">
+            <select name="datem" required>
+                <option disabled selected value> Month </option>
                 <option value="01">January</option>
                 <option value="02">Febuary</option>
                 <option value="03">March</option>
@@ -94,13 +106,15 @@
                 <option value="11">November</option>
                 <option value="12">December</option>
             </select>
-            <select name="datey">
+            <select name="datey" required>
+                <option disabled selected value> Year </option>
                 <option value="17">2017</option>
                 <option value="18">2018</option>
             </select>
             <br><br>
-            <input type="file" name="file" multiple>
+            <input type="file" name="file" multiple required>
             <input type="submit" value="Upload File">
         </form>
+        <div id="result"></div>
     </body>
 </html>

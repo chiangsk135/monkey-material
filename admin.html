@@ -1,12 +1,138 @@
 <html>
+    <head>
+        <style>
+            table, th, td{
+                border: 1px solid black;
+                border-collapse: collapse;
+            }
+        </style>
+    </head>
     <body>
-        <!-- <tb> -->
+        <table style="border:black"></table>
+        <br>
         <form action="update-path" method="post">
-            Update db path : <input type="text" name="path"><input type="submit" value="Change Path">
+            Update db path : <input type="text" name="path" placeholder="Data path" required>
+            <input type="submit" value="Change Path">
         </form>
         <form action="update-quarter" method="post">
-            Update quarter : <input type="text" name="quarter"><br>
-            year : <input type="number" name="year"><input type="submit" value="Change Quarter/Year">
+            Update year : <input type="number" name="year" placeholder="Year" required>
+            quarter : <input type="number" name="quarter" placeholder="Quarter" required>
+            <input type="submit" value="Change Quarter/Year">
+        </form>
+        <form action="add-course" method="post">
+            <input type="text" name="courseName" placeholder="Course Name" required>
+            <select name="tutor" required>
+                <!-- list -->
+                <option disabled selected value> == Select tutor == </option>
+                <option value="third">Third</option>
+                <option value="beng">Beng</option>
+                <option value="ya">Ya</option>
+                <option value="paan">Paan</option>
+                <option value="view">View</option>
+                <option value="bb">BB</option>
+                <option value="gag">Gag</option>
+                <option value="anne">Anne</option>
+                <option value="bg">BG</option>
+                <option value="louis">Louis</option>
+                <option value="ten">Ten</option>
+                <option value="pre">Pre</option>
+                <option value="atom">Atom</option>
+                <option value="pe/ch">Pepe/Chote</option>
+            </select>
+            <select name="day" required>
+                <option disabled selected value> == Select day == </option>
+                <option value="SAT">Saturday</option>
+                <option value="SUN">Sunday</option>
+            </select>
+            <select name="time" required>
+                <option disabled selected value> == Select time == </option>
+                <option value="8-10">8.00-10.00</option>
+                <option value="10-12">10.00-12.00</option>
+                <option value="13-15">13.00-15.00</option>
+                <option value="15-17">15.00-17.00</option>
+            </select>
+            <input type="submit" value="Add new course">
+        </form>
+        <form action="remove-course" method="post">
+            <select name="tutor" required>
+                <!-- list -->
+                <option disabled selected value> == Select tutor == </option>
+                <option value="third">Third</option>
+                <option value="beng">Beng</option>
+                <option value="ya">Ya</option>
+                <option value="paan">Paan</option>
+                <option value="view">View</option>
+                <option value="bb">BB</option>
+                <option value="gag">Gag</option>
+                <option value="anne">Anne</option>
+                <option value="bg">BG</option>
+                <option value="louis">Louis</option>
+                <option value="ten">Ten</option>
+                <option value="pre">Pre</option>
+                <option value="atom">Atom</option>
+                <option value="pe/ch">Pepe/Chote</option>
+            </select>
+            <select name="day" required>
+                <option disabled selected value> == Select day == </option>
+                <option value="SAT">Saturday</option>
+                <option value="SUN">Sunday</option>
+            </select>
+            <select name="time" required>
+                <option disabled selected value> == Select time == </option>
+                <option value="8-10">8.00-10.00</option>
+                <option value="10-12">10.00-12.00</option>
+                <option value="13-15">13.00-15.00</option>
+                <option value="15-17">15.00-17.00</option>
+            </select>
+            <input type="submit" value="Remove course">
+        </form>
+        <form action="remove-submission" method="post">
+            <select name="tutor" required>
+                <!-- list -->
+                <option disabled selected value> == Select tutor == </option>
+                <option value="third">Third</option>
+                <option value="beng">Beng</option>
+                <option value="ya">Ya</option>
+                <option value="paan">Paan</option>
+                <option value="view">View</option>
+                <option value="bb">BB</option>
+                <option value="gag">Gag</option>
+                <option value="anne">Anne</option>
+                <option value="bg">BG</option>
+                <option value="louis">Louis</option>
+                <option value="ten">Ten</option>
+                <option value="pre">Pre</option>
+                <option value="atom">Atom</option>
+                <option value="pe/ch">Pepe/Chote</option>
+            </select>
+            <select name="day" required>
+                <option disabled selected value> == Select day == </option>
+                <option value="SAT">Saturday</option>
+                <option value="SUN">Sunday</option>
+            </select>
+            <select name="time" required>
+                <option disabled selected value> == Select time == </option>
+                <option value="8-10">8.00-10.00</option>
+                <option value="10-12">10.00-12.00</option>
+                <option value="13-15">13.00-15.00</option>
+                <option value="15-17">15.00-17.00</option>
+            </select>
+            <select name="numberOfSub" required>
+                <option disabled selected value> == Select # of submission == </option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+            </select>
+            <input type="submit" value="Remove submission">
         </form>
     </body>
 </html>
