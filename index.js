@@ -11,7 +11,7 @@ app.use(bodyParser.urlencoded({extended:false}));
 app.use(multer({dest:"/tmp/"}).any());
 app.listen(80);
 
-MongoClient.connect("mongodb://localhost:27017/monkey-material",function(err,db){
+MongoClient.connect("mongodb://127.0.0.1:27017/monkey-material",function(err,db){
     assert.equal(null, err);
     console.log("[CONNECTED] MongoDB successfully");
     var configDB=db.collection("config");

@@ -6,77 +6,100 @@ var run=function(app,db){
 
     var configDB=db.collection("config");
     var courseDB=db.collection("course");
+    var build=require("./html-builder.js").build;
 
-    // Send index.html
+    // Send user.html
     app.get('/',function(req,res){
         console.log("[PAGE REQUEST] index FROM "+req.ip);
-        // res.sendFile(__dirname+"/index.html");
-        $=cheerio.load(fs.readFileSync(__dirname+"/index.html"));
-        // $("select[name=\"tutor\"]").append("<option value=\"chiang\">Chiang</option>");
-        res.send($.html());
+        build(db,"user",function(page){
+            res.send(page);
+        });
     });
-    // Load index.html(modded) / Get configDB / Get input from form / Get courseName from courseDB / Fill newPath / Read and Write newfile / Insert new submission in courseDB
-    app.post('/file_upload',function(req,res){
-        console.log("[PAGE REQUEST] file_upload FROM "+req.ip);
+    // Load user.html(modded) / Get configDB / Get input from form / Get courseName from courseDB / Fill newPath / Read and Write newfile / Insert new submission in courseDB
+    app.post('/file-upload',function(req,res){
+        console.log("[PAGE REQUEST] file-upload FROM "+req.ip);
 
-        $=cheerio.load(fs.readFileSync(__dirname+"/index.html"));
-        configDB.findOne({},function(err,doc){
-            var newPath=doc.path;
-            var year=doc.year;
-            var quarter=doc.quarter;
+        configDB.findOne({},function(err,result){
+            var newPath=result.path;
+            var year=result.year;
+            var quarter=result.quarter;
             // TODO make dir if not exists
             // var newPath=__dirname+"/asdf/";//For testing purpose
             var tutor=req.body.tutor,day=req.body.day,time=req.body.time,numberOfSub=req.body.numberOfSub;
             var dated=req.body.dated,datem=req.body.datem,datey=req.body.datey;
-            courseDB.findOne({tutor:tutor,day:day,time:time},function(err,doc){
-                var courseName=doc.courseName;
-
+            courseDB.findOne({tutor:tutor,day:day,time:time},function(err,result){
+                // if(result.submission[numberOfSub-1].status=="accepted"){
+                //     console.log("AAAAAAAAAAAAAAAAAAAAAACCCCCCCCCCCCCCCCCCCCCCCC");
+                // }
+                var courseName=result.courseName;
                 newPath+="CR"+year+"Q"+quarter+"/";
                 newPath+=courseName+"("+day+")"+"("+time+")"+"/";
                 newPath+=numberOfSub+"_"+dated+datem+datey+"/";
-                // TODO warning-exist-file
-                for(var i=0;i<req.files.length;i++){
-                    var noError=true;
-                    var originalName=req.files[i].originalname;
-                    var oldPath=req.files[i].path;
-                    var file=newPath+originalName;
 
-                    try{
-                        var data=fs.readFileSync(oldPath);
-                    }catch(err){
-                        noError=false;
-                        console.error(err);
-                        $("#result").append("<p>"+err.message+"</p>");
-                    }
-                    if(noError){
+                build(db,"user",function(page){
+                    $=cheerio.load(page);
+
+                    // TODO warning-exist-file
+                    var noAnyError=true;
+                    for(var i=0;i<req.files.length;i++){
+                        var noError=true;
+                        var originalName=req.files[i].originalname;
+                        var oldPath=req.files[i].path;
+                        var file=newPath+originalName;
+
                         try{
-                            fs.writeFileSync(file, data);
+                            var data=fs.readFileSync(oldPath);
                         }catch(err){
                             noError=false;
+                            noAnyError=false;
                             console.error(err);
-                            $("#result").append("<p>"+err.message+"</p>");
+                            $("#message").append("<pre>"+err.message+"</pre>");
                         }
                         if(noError){
-                            console.log("[FILE UPLOADED : "+originalName+" from "+oldPath+" to "+newPath+"]");
-                            $("#result").append("<p>File #"+(i+1)+" uploaded : "+originalName+"</p>");
+                            try{
+                                fs.writeFileSync(file, data);
+                            }catch(err){
+                                noError=false;
+                                noAnyError=false;
+                                console.error(err);
+                                $("#message").append("<pre>"+err.message+"</pre>");
+                            }
+                            if(noError){
+                                console.log("[FILE UPLOADED] "+originalName+" from "+oldPath+" to "+newPath+"]");
+                                $("#message").append("<pre>File #"+(i+1)+" uploaded : "+originalName+"</pre>");
+                            }
                         }
                     }
-                }
-
-                courseDB.updateOne({tutor:tutor,day:day,time:time},
-                    {$set:{["submission."+(numberOfSub-1)]:{dated:dated,datem:datem,datey:datey,status:"pending"}}},
-                    // {$push:{"submission":"Subb"}},
-                    function(err,result){
-                        if(err)console.error(err);
-                        // else console.log(result);
-                        courseDB.findOne({tutor:tutor,day:day,time:time},function(err,doc){
-                            console.log(doc);
+                    if(noAnyError){
+                        courseDB.updateOne({tutor:tutor,day:day,time:time},
+                            {$set:{["submission."+(numberOfSub-1)]:{dated:dated,datem:datem,datey:datey,status:"pending"}}},
+                            function(err,result){
+                                if(err)console.error(err);
+                                courseDB.find({tutor:tutor,day:day,time:time}).toArray(function(err,result){
+                                    for(var i=0;i<result.length;i++){
+                                        $("#message").append("<pre>"+result[i].courseName+" "+result[i].tutor+" "+result[i].day+" "+result[i].time+"</pre>");
+                                        for(var j=0;j<result[i].submission.length;j++){
+                                            $("#message").append("<pre>  #"+(j+1)+" : "+result[i].submission[j].status+"</pre>");
+                                        }
+                                    }
+                                    res.send($.html());
+                                });
+                            }
+                        );
+                    }
+                    else{
+                        $("#message").append("<pre>  Error occurs </pre>");
+                        courseDB.find({tutor:tutor,day:day,time:time}).toArray(function(err,result){
+                            for(var i=0;i<result.length;i++){
+                                $("#message").append("<pre>"+result[i].courseName+" "+result[i].tutor+" "+result[i].day+" "+result[i].time+"</pre>");
+                                for(var j=0;j<result[i].submission.length;j++){
+                                    $("#message").append("<pre>  #"+(j+1)+" : "+result[i].submission[j].status+"</pre>");
+                                }
+                            }
+                            res.send($.html());
                         });
                     }
-                );
-
-                $("#result").after("<input type=\"button\" onclick=\"window.history.back()\" value=\"Back\">");
-                res.send($.html());
+                });
             });
         });
     });
