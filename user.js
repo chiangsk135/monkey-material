@@ -41,7 +41,7 @@ var run=function(app,db){
                     build(db,"user",function(page){
                         $=cheerio.load(page);
 
-                        // TODO warning-exist-file
+                        // TODO remove-exist-files
                         var noAnyError=true;
                         for(var i=0;i<req.files.length;i++){
                             var noError=true;
@@ -81,7 +81,7 @@ var run=function(app,db){
                                         for(var i=0;i<result.length;i++){
                                             $("#message").append("<pre>"+result[i].courseName+" "+result[i].tutor+" "+result[i].day+" "+result[i].time+"</pre>");
                                             for(var j=0;j<result[i].submission.length;j++){
-                                                $("#message").append("<pre>  #"+(j+1)+" : "+result[i].submission[j].status+"</pre>");
+                                                if(result[i].submission[j]!=null)$("#message").append("<pre>  #"+(j+1)+" : "+result[i].submission[j].status+"</pre>");
                                             }
                                         }
                                         res.send($.html());
@@ -95,7 +95,7 @@ var run=function(app,db){
                                 for(var i=0;i<result.length;i++){
                                     $("#message").append("<pre>"+result[i].courseName+" "+result[i].tutor+" "+result[i].day+" "+result[i].time+"</pre>");
                                     for(var j=0;j<result[i].submission.length;j++){
-                                        $("#message").append("<pre>  #"+(j+1)+" : "+result[i].submission[j].status+"</pre>");
+                                        if(result[i].submission[j]!=null)$("#message").append("<pre>  #"+(j+1)+" : "+result[i].submission[j].status+"</pre>");
                                     }
                                 }
                                 res.send($.html());

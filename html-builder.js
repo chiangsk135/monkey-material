@@ -97,6 +97,11 @@ var build=function(db,what,callback){
             $=cheerio.load(fs.readFileSync(__dirname+"/admin.html"));
             $("form[action=\"add-course\"]").append(tutorInput()+dayInput()+timeInput()+submitInput("Add new course"));
             $("form[action=\"remove-course\"]").append(tutorInput()+dayInput()+timeInput()+submitInput("Remove course"));
+            // $("form[action=\"edit-course\"]").prepend("old course : "+tutorInput()+dayInput()+timeInput()+"<br>");
+            // $("form[action=\"edit-course\"]").append(tutorInput()+dayInput()+timeInput()+submitInput("Edit course"));
+            // $("form[action=\"edit-course\"] input[name=\"tutor\"]:last-child").attr("name","newTutor");
+            // $("form[action=\"edit-course\"] input[name=\"day\"]:last-child").attr("name","newDay");
+            // $("form[action=\"edit-course\"] input[name=\"time\"]:last-child").attr("name","newTime");
             $("form[action=\"remove-submission\"]").append(tutorInput()+dayInput()+timeInput()+numberOfSubInput()+submitInput("Remove submission"));
 
             courseDB.find({}).toArray(function(err,result){
@@ -129,7 +134,9 @@ var build=function(db,what,callback){
                                 $("table tr:last-child td:last-child form:last-child").append("<input type=\"hidden\" value=\""+result[j].time+"\" name=\"time\">");
                                 $("table tr:last-child td:last-child form:last-child").append("<input type=\"hidden\" value=\""+i+"\" name=\"numberOfSub\">");
                                 $("table tr:last-child td:last-child form:last-child").append("<input type=\"submit\" value=\"AC\" name=\"from\">");
+                                $("table tr:last-child td:last-child form:last-child input:last-child").attr("onclick","window.location=\"mailto:?subject=Accepted&body=Accepted%20!%0ARegards%20\"");
                                 $("table tr:last-child td:last-child form:last-child").append("<input type=\"submit\" value=\"RJ\" name=\"from\">");
+                                $("table tr:last-child td:last-child form:last-child input:last-child").attr("onclick","window.location=\"mailto:?subject=Rejected&body=Rejected%20!%0ARegards%20\"");
                             }
                             else $("table tr:last-child").append("<td>-</td>");
                         }

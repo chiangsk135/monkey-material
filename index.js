@@ -21,6 +21,7 @@ MongoClient.connect("mongodb://127.0.0.1:27017/monkey-material",function(err,db)
         console.log("[List of databases]");
         console.log(result);
     });
+    //List all collections
     db.listCollections().toArray(function(err,result){
         console.log("[List of collections]");
         console.log(result);
@@ -40,18 +41,6 @@ MongoClient.connect("mongodb://127.0.0.1:27017/monkey-material",function(err,db)
         //     console.log("========");
         // });
 
-        // configDB.updateOne({},{$set:{path:req.body.path}},function(){
-        //     build(db,"admin",function(page){
-        //         $=cheerio.load(page);
-        //         configDB.findOne({},function(err,result){
-        //             $("#message").append("<pre>newPath = "+result.path+"</pre>");
-        //             $("#message").append("<pre>Year    = "+result.year+"</pre>");
-        //             $("#message").append("<pre>Quarter = "+result.quarter+"</pre>");
-        //             res.send($.html());
-        //         });
-        //     });
-        // });
-
         // Log configDB & courseDB
         configDB.find({}).toArray(function(err,result){
             assert.equal(err, null);
@@ -60,7 +49,6 @@ MongoClient.connect("mongodb://127.0.0.1:27017/monkey-material",function(err,db)
             courseDB.find({}).toArray(function(err,result){
                 assert.equal(err, null);
                 console.log("[Course Collection]");
-                // console.log(result);
                 for(var i=0;i<result.length;i++){
                     console.log(result[i].courseName+" "+result[i].tutor+" "+result[i].day+" "+result[i].time+" #"+result[i].submission.length);
                     for(var j=0;j<result[i].submission.length;j++){
