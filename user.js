@@ -1,13 +1,13 @@
 console.log("[STARTING] user.js");
 var run=function(app,db){
 
-    var cheerio = require('cheerio');
+    var cheerio=require('cheerio');
     var fs=require("fs-extra");
 
     var configDB=db.collection("config");
     configDB.findOne({},function(err,config){
-        // var courseDB=db.collection("CR"+config.year+"Q"+config.quarter);
-        var courseDB=db.collection("course");
+        var courseDB=db.collection("CR"+config.year+"Q"+config.quarter);
+        // var courseDB=db.collection("course");
         var build=require("./html-builder.js").build;
 
         // Send user.html
@@ -25,14 +25,11 @@ var run=function(app,db){
                 var newPath=result.path;
                 var year=result.year;
                 var quarter=result.quarter;
-                // TODO make dir if not exists
                 // var newPath=__dirname+"/asdf/";//For testing purpose
-                var tutor=req.body.tutor,day=req.body.day,time=req.body.time,numberOfSub=req.body.numberOfSub;
+                var tutor=req.body.tutor,day=req.body.day,time=req.body.time;
+                var numberOfSub=req.body.numberOfSub;
                 var dated=req.body.dated,datem=req.body.datem,datey=req.body.datey;
                 courseDB.findOne({tutor:tutor,day:day,time:time},function(err,result){
-                    // if(result.submission[numberOfSub-1].status=="accepted"){
-                    //     console.log("AAAAAAAAAAAAAAAAAAAAAACCCCCCCCCCCCCCCCCCCCCCCC");
-                    // }
                     var courseName=result.courseName;
                     newPath+="CR"+year+"Q"+quarter+"/";
                     newPath+=courseName+"("+day+")"+"("+time+")"+"/";
@@ -40,7 +37,6 @@ var run=function(app,db){
 
                     build(db,"user",function(page){
                         $=cheerio.load(page);
-
                         // TODO remove-exist-files
                         var noAnyError=true;
                         for(var i=0;i<req.files.length;i++){

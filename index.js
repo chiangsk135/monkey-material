@@ -3,8 +3,8 @@ console.log("[STARTING] index.js");
 var bodyParser=require("body-parser");
 var express=require("express");
 var multer=require("multer");
-var MongoClient = require('mongodb').MongoClient;
-var assert = require('assert');
+var MongoClient=require('mongodb').MongoClient;
+var assert=require('assert');
 
 var app=express();
 app.use(bodyParser.urlencoded({extended:false}));
@@ -12,24 +12,28 @@ app.use(multer({dest:"/tmp/"}).any());
 app.listen(80);
 
 MongoClient.connect("mongodb://127.0.0.1:27017/monkey-material",function(err,db){
-    assert.equal(null, err);
+    assert.equal(err,null);
     console.log("[CONNECTED] MongoDB successfully");
     // List all databases
     db.admin().listDatabases(function(err,result){
-        assert.equal(null, err);
-        assert.ok(result.databases.length > 0);
         console.log("[List of databases]");
         console.log(result);
-    });
-    //List all collections
-    db.listCollections().toArray(function(err,result){
-        console.log("[List of collections]");
-        console.log(result);
+        //List all collections
+        db.listCollections().toArray(function(err,result){
+            console.log("[List of collections]");
+            console.log(result);
+        });
     });
     var configDB=db.collection("config");
     configDB.findOne({},function(err,config){
-        // var courseDB=db.collection("CR"+config.year+"Q"+config.quarter);// TODO change name
-        var courseDB=db.collection("course");
+        if(config==null){
+            configDB.updateOne({},{$set:{year:0,quarter:0}},function(err){
+                assert.equal(err,null);
+                console.log("[WARNING] Go to /monkeyadmin to config path/year/quarter");
+            });
+        }
+        var courseDB=db.collection("CR"+config.year+"Q"+config.quarter);
+        // var courseDB=db.collection("course");
         require("./admin.js").run(app,db);
         require("./user.js").run(app,db);
 
@@ -42,13 +46,13 @@ MongoClient.connect("mongodb://127.0.0.1:27017/monkey-material",function(err,db)
         // });
 
         // Log configDB & courseDB
-        configDB.find({}).toArray(function(err,result){
-            assert.equal(err, null);
+        configDB.findOne({},function(err,config){
+            assert.equal(err,null);
             console.log("[Config Collection]");
-            console.log(result);
+            console.log(config);
             courseDB.find({}).toArray(function(err,result){
-                assert.equal(err, null);
-                console.log("[Course Collection]");
+                assert.equal(err,null);
+                console.log("[Course (CR"+config.year+"Q"+config.quarter+") Collection]");
                 for(var i=0;i<result.length;i++){
                     console.log(result[i].courseName+" "+result[i].tutor+" "+result[i].day+" "+result[i].time+" #"+result[i].submission.length);
                     for(var j=0;j<result[i].submission.length;j++){

@@ -1,13 +1,13 @@
 console.log("[STARTING] html-builder.js");
 var build=function(db,what,callback){
 
-    var cheerio = require('cheerio');
+    var cheerio=require('cheerio');
     var fs=require("fs-extra");
 
     var configDB=db.collection("config");
     configDB.findOne({},function(err,config){
-        // var courseDB=db.collection("CR"+config.year+"Q"+config.quarter);
-        var courseDB=db.collection("course");
+        var courseDB=db.collection("CR"+config.year+"Q"+config.quarter);
+        // var courseDB=db.collection("course");
 
         var tutorInput=function(){
             return "<select name=\"tutor\" required>"+
@@ -92,16 +92,21 @@ var build=function(db,what,callback){
         var submitInput=function(val){
             return "<input type=\"submit\" value=\""+val+"\">";
         }
+        var digit=function(numDigit,x){
+            var ret=x.toString();
+            while(ret.length<numDigit)ret="0"+ret;
+            return ret;
+        }
 
         if(what=="admin"){
             $=cheerio.load(fs.readFileSync(__dirname+"/admin.html"));
             $("form[action=\"add-course\"]").append(tutorInput()+dayInput()+timeInput()+submitInput("Add new course"));
             $("form[action=\"remove-course\"]").append(tutorInput()+dayInput()+timeInput()+submitInput("Remove course"));
-            // $("form[action=\"edit-course\"]").prepend("old course : "+tutorInput()+dayInput()+timeInput()+"<br>");
-            // $("form[action=\"edit-course\"]").append(tutorInput()+dayInput()+timeInput()+submitInput("Edit course"));
-            // $("form[action=\"edit-course\"] input[name=\"tutor\"]:last-child").attr("name","newTutor");
-            // $("form[action=\"edit-course\"] input[name=\"day\"]:last-child").attr("name","newDay");
-            // $("form[action=\"edit-course\"] input[name=\"time\"]:last-child").attr("name","newTime");
+            $("form[action=\"edit-course\"]").append(tutorInput()+dayInput()+timeInput()+submitInput("Edit course"));
+            $("form[action=\"edit-course\"] [name=\"tutor\"]").attr("name","newTutor");
+            $("form[action=\"edit-course\"] [name=\"day\"]").attr("name","newDay");
+            $("form[action=\"edit-course\"] [name=\"time\"]").attr("name","newTime");
+            $("form[action=\"edit-course\"]").prepend("old course : "+tutorInput()+dayInput()+timeInput()+"<br>");
             $("form[action=\"remove-submission\"]").append(tutorInput()+dayInput()+timeInput()+numberOfSubInput()+submitInput("Remove submission"));
 
             courseDB.find({}).toArray(function(err,result){
@@ -134,9 +139,9 @@ var build=function(db,what,callback){
                                 $("table tr:last-child td:last-child form:last-child").append("<input type=\"hidden\" value=\""+result[j].time+"\" name=\"time\">");
                                 $("table tr:last-child td:last-child form:last-child").append("<input type=\"hidden\" value=\""+i+"\" name=\"numberOfSub\">");
                                 $("table tr:last-child td:last-child form:last-child").append("<input type=\"submit\" value=\"AC\" name=\"from\">");
-                                $("table tr:last-child td:last-child form:last-child input:last-child").attr("onclick","window.location=\"mailto:?subject=Accepted&body=Accepted%20!%0ARegards%20\"");
+                                $("table tr:last-child td:last-child form:last-child input:last-child").attr("onclick","window.location=\"mailto:?subject=TO%20(name),"+result[j].courseName+digit(2,i+1)+"%20ACCEPTED\"");
                                 $("table tr:last-child td:last-child form:last-child").append("<input type=\"submit\" value=\"RJ\" name=\"from\">");
-                                $("table tr:last-child td:last-child form:last-child input:last-child").attr("onclick","window.location=\"mailto:?subject=Rejected&body=Rejected%20!%0ARegards%20\"");
+                                $("table tr:last-child td:last-child form:last-child input:last-child").attr("onclick","window.location=\"mailto:?subject=TO%20(name),"+result[j].courseName+digit(2,i+1)+"%20REJECTED\"");
                             }
                             else $("table tr:last-child").append("<td>-</td>");
                         }

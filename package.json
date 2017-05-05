@@ -1,6 +1,6 @@
 {
   "name": "monkey-material",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Course material transferring and tracking system",
   "main": "index.js",
   "scripts": {
