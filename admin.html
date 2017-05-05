@@ -10,9 +10,15 @@
     <body>
         <table></table>
         <br>
+        <!-- <a href="file:///Z:/TO CRDB/CR60Q2">Drive Z</a>
+        <a href="mailto:chiang-siraphop@mkyhybrid.com?subject=Message%20delivered&body=Enjoy%20your%20stay%0ARegards%20">Email</a> -->
         <form action="update-path" method="post">
-            Update db path : <input type="text" name="path" placeholder="Data path" required>
+            Update db path : <input type="text" name="path" placeholder="Data path" required><code> ex. //OtherComputer/folder</code>
             <input type="submit" value="Change Path">
+        </form>
+        <form action="update-local" method="post">
+            Update local db path : file:///<input type="text" name="path" placeholder="Local data path" required><code> ex. C:/folder</code>
+            <input type="submit" value="Change Local Path">
         </form>
         <form action="update-quarter" method="post">
             Update year : <input type="number" name="year" placeholder="Year" required>
