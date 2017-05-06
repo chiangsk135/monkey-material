@@ -84,7 +84,7 @@ var run=function(app,db){
                 build(db,"admin",function(page){
                     $=cheerio.load(page);
                     configDB.findOne({},function(err,config){
-                        $("#message").append("<pre>[Updated] Local = "+result.local+"</pre>");
+                        $("#message").append("<pre>[Updated] Local = "+config.local+"</pre>");
                         res.send($.html());
                     });
                 });

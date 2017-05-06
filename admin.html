@@ -1,36 +1,85 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
     <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
         <style>
-            table, th, td{
-                border: 1px solid black;
-                border-collapse: collapse;
+            th{
+                color:rgb(255,255,255);
+                font-size:120%;
+            }
+            .tutor{
+                background-color:rgb(49,193,193);
+            }
+            .sat{
+                background-color:rgb(128,82,121);
+            }
+            .sun{
+                background-color:rgb(225,86,63);
+            }
+            .time{
+                background-color:rgb(255,138,9);
             }
         </style>
     </head>
     <body>
-        <table></table>
+        <!-- <div class="container-fluid">
+            <h1>Test</h1>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            <div class="row">
+                <div class="col-sm-4">column1</div>
+                <div class="col-sm-4">column2</div>
+                <div class="col-sm-4">column3</div>
+            </div>
+            <div class="row">
+                <div class="col-sm-3">column1</div>
+                <div class="col-sm-4">column2</div>
+                <div class="col-sm-5">column3</div>
+            </div>
+        </div> -->
+        <div class="table-responsive">
+            <table class="table table-bordered" id="tracking">
+                <thead></thead>
+                <tbody></tbody>
+            </table>
+        </div>
         <br>
-        <form action="update-path" method="post">
-            Update db path : <input type="text" name="path" placeholder="Data path" required><code> ex. //OtherComputer/folder</code>
-            <input type="submit" value="Change Path">
-        </form>
-        <form action="update-local" method="post">
-            Update local db path : file:///<input type="text" name="path" placeholder="Local data path" required><code> ex. C:/folder</code>
-            <input type="submit" value="Change Local Path">
-        </form>
-        <form action="update-quarter" method="post">
-            Update year : <input type="number" name="year" placeholder="Year" required>
-            quarter : <input type="number" name="quarter" placeholder="Quarter" required>
-            <input type="submit" value="Change Quarter/Year">
-        </form>
-        <form action="add-course" method="post">
-            <input type="text" name="courseName" placeholder="Course Name" required>
-        </form>
-        <form action="remove-course" method="post"></form>
-        <form action="edit-course" method="post">
-            <input type="text" name="courseName" placeholder="New course name" required>
-        </form>
-        <form action="remove-submission" method="post"></form>
+        <div style="background-color:lightblue;padding:10px;padding-bottom:1px;margin-bottom:10px">
+            <form action="update-path" method="post">
+                Update db path : <input class="form-control" type="text" name="path" placeholder="Data path" required> <code>ex. //OtherComputer/folder</code>
+                <input type="submit" class="btn btn-default" value="Change Path">
+            </form>
+        </div>
+        <div style="background-color:lightblue;padding:10px;padding-bottom:1px;margin-bottom:10px">
+            <form action="update-local" method="post">
+                Update local db path : file:///<input class="form-control" type="text" name="path" placeholder="Local data path" required> <code>ex. C:/folder</code>
+                <input type="submit" class="btn btn-default" value="Change Local Path">
+            </form>
+        </div>
+        <div style="background-color:lightblue;padding:10px;padding-bottom:1px;margin-bottom:10px">
+            <form action="update-quarter" method="post">
+                Update year : <input class="form-control" type="number" name="year" placeholder="Year" required>
+                quarter : <input class="form-control" type="number" name="quarter" placeholder="Quarter" required>
+                <input type="submit" class="btn btn-default" value="Change Quarter/Year">
+            </form>
+        </div>
+        <div style="background-color:lightblue;padding:10px;padding-bottom:1px;margin-bottom:10px">
+            <form action="add-course" method="post">
+                <input class="form-control" type="text" name="courseName" placeholder="Course Name" required>
+            </form>
+        </div>
+        <div style="background-color:lightblue;padding:10px;padding-bottom:1px;margin-bottom:10px">
+            <form action="remove-course" method="post"></form>
+        </div>
+        <div style="background-color:lightblue;padding:10px;padding-bottom:1px;margin-bottom:10px">
+            <form action="edit-course" method="post">
+                <input class="form-control" type="text" name="courseName" placeholder="New course name" required>
+            </form>
+        </div>
+        <div style="background-color:lightblue;padding:10px;padding-bottom:1px;margin-bottom:10px">
+            <form action="remove-submission" method="post"></form>
+        </div>
         <div id="message"></div>
     </body>
 </html>

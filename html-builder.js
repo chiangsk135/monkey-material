@@ -10,33 +10,25 @@ var build=function(db,what,callback){
         // var courseDB=db.collection("course");
 
         var tutorInput=function(){
-            return "<select name=\"tutor\" required>"+
-                "<option disabled selected value> == Select tutor == </option>"+
-                "<option value=\"third\">Third</option>"+
-                "<option value=\"beng\">Beng</option>"+
-                "<option value=\"ya\">Ya</option>"+
-                "<option value=\"paan\">Paan</option>"+
-                "<option value=\"view\">View</option>"+
-                "<option value=\"bb\">BB</option>"+
-                "<option value=\"gag\">Gag</option>"+
-                "<option value=\"anne\">Anne</option>"+
-                "<option value=\"bg\">BG</option>"+
-                "<option value=\"louis\">Louis</option>"+
-                "<option value=\"ten\">Ten</option>"+
-                "<option value=\"pre\">Pre</option>"+
-                "<option value=\"atom\">Atom</option>"+
-                "<option value=\"pe/ch\">Pepe/Chote</option>"+
-            "</select>";
+            var tutor=["third","beng","ya","paan","view","bb","gag","anne","bg","louis","ten","pre","atom","pe/ch"];
+            var $=cheerio.load("<select></select>");
+            $("select").addClass("form-control");
+            $("select").append("<option disabled selected> == Select tutor == </option>");
+            for(var i=0;i<tutor.length;i++){
+                $("select").append("<option>"+tutor[i].toUpperCase()+"</option>");
+                $("select option:last-child").val(tutor[i]);
+            }
+            return $.html();
         }
         var dayInput=function(){
-            return "<select name=\"day\" required>"+
+            return "<select class=\"form-control\" name=\"day\" required>"+
                 "<option disabled selected value> == Select day == </option>"+
                 "<option value=\"SAT\">Saturday</option>"+
                 "<option value=\"SUN\">Sunday</option>"+
             "</select>";
         }
         var timeInput=function(){
-            return "<select name=\"time\" required>"+
+            return "<select class=\"form-control\" name=\"time\" required>"+
                 "<option disabled selected value> == Select time == </option>"+
                 "<option value=\"8-10\">8.00-10.00</option>"+
                 "<option value=\"10-12\">10.00-12.00</option>"+
@@ -45,7 +37,7 @@ var build=function(db,what,callback){
             "</select>";
         }
         var numberOfSubInput=function(){
-            var ret="<select name=\"numberOfSub\" required>"+
+            var ret="<select class=\"form-control\" name=\"numberOfSub\" required>"+
                 "<option disabled selected value> == Select # of submission == </option>";
             for(var i=1;i<=12;i++){
                 ret+="<option value=\""+i+"\">"+i+"</option>";
@@ -54,7 +46,7 @@ var build=function(db,what,callback){
             return ret;
         }
         var datedInput=function(){
-            var ret="<select name=\"dated\" required>"+
+            var ret="<select class=\"form-control\" name=\"dated\" required>"+
                 "<option disabled selected value> Day </option>";
             for(var i=1;i<=9;i++){
                 ret+="<option value=\"0"+i+"\">"+i+"</option>";
@@ -66,7 +58,7 @@ var build=function(db,what,callback){
             return ret;
         }
         var datemInput=function(){
-            return "<select name=\"datem\" required>"+
+            return "<select class=\"form-control\" name=\"datem\" required>"+
                 "<option disabled selected value> Month </option>"+
                 "<option value=\"01\">January</option>"+
                 "<option value=\"02\">Febuary</option>"+
@@ -83,14 +75,14 @@ var build=function(db,what,callback){
             "</select>";
         }
         var dateyInput=function(){
-            return "<select name=\"datey\" required>"+
+            return "<select class=\"form-control\" name=\"datey\" required>"+
                 "<option disabled selected value> Year </option>"+
                 "<option value=\"17\">2017</option>"+
                 "<option value=\"18\">2018</option>"+
             "</select>";
         }
         var submitInput=function(val){
-            return "<input type=\"submit\" value=\""+val+"\">";
+            return "<input type=\"submit\" class=\"btn btn-default\" value=\""+val+"\">";
         }
         var digit=function(numDigit,x){
             var ret=x.toString();
@@ -100,6 +92,7 @@ var build=function(db,what,callback){
 
         if(what=="admin"){
             $=cheerio.load(fs.readFileSync(__dirname+"/admin.html"));
+            $("form").addClass("form-inline");
             $("form[action=\"add-course\"]").append(tutorInput()+dayInput()+timeInput()+submitInput("Add new course"));
             $("form[action=\"remove-course\"]").append(tutorInput()+dayInput()+timeInput()+submitInput("Remove course"));
             $("form[action=\"edit-course\"]").append(tutorInput()+dayInput()+timeInput()+submitInput("Edit course"));
@@ -114,36 +107,55 @@ var build=function(db,what,callback){
                     var path=config.path;
                     var year=config.year;
                     var quarter=config.quarter;
-                    $("table").append("<tr></tr>");
-                    for(var i=0;i<result.length;i++)$("table tr:last-child").append("<td>"+result[i].tutor+"</td>");
-                    $("table").append("<tr></tr>");
-                    for(var i=0;i<result.length;i++)$("table tr:last-child").append("<td>"+result[i].day+"</td>");
-                    $("table").append("<tr></tr>");
-                    for(var i=0;i<result.length;i++)$("table tr:last-child").append("<td>"+result[i].time+"</td>");
-                    $("table").append("<tr></tr>");
-                    for(var i=0;i<result.length;i++)$("table tr:last-child").append("<td>"+result[i].courseName+"</td>");
+                    $("#tracking thead").append("<tr></tr>");
+                    for(var i=0;i<result.length;i++){
+                        $("#tracking thead tr:last-child").append("<th>KRU "+result[i].tutor.toUpperCase()+"</th>");
+                        $("#tracking thead tr:last-child th:last-child").addClass("tutor");
+                    }
+                    $("#tracking thead").append("<tr></tr>");
+                    for(var i=0;i<result.length;i++){
+                        $("#tracking thead tr:last-child").append("<th>"+result[i].day+"</th>");
+                        $("#tracking thead tr:last-child th:last-child").addClass(result[i].day.toLowerCase());
+                    }
+                    $("#tracking thead").append("<tr></tr>");
+                    for(var i=0;i<result.length;i++){
+                        $("#tracking thead tr:last-child").append("<th>"+result[i].time+"</th>");
+                        $("#tracking thead tr:last-child th:last-child").addClass("time");
+                    }
+                    $("#tracking thead").append("<tr></tr>");
+                    for(var i=0;i<result.length;i++){
+                        $("#tracking thead tr:last-child").append("<th>"+result[i].courseName+"</th>");
+                        $("#tracking thead tr:last-child th:last-child").addClass("time");
+                    }
                     for(var i=0;i<12;i++){
-                        $("table").append("<tr></tr>");
+                        $("#tracking tbody").append("<tr></tr>");
                         for(var j=0;j<result.length;j++){
                             if(result[j].submission[i]){
-                                $("table tr:last-child").append("<td></td>");
-                                $("table tr:last-child td:last-child").append("<a href=\""+config.local+
+                                $("#tracking tbody tr:last-child").append("<td></td>");
+                                if(result[j].submission[i].status=="pending")$("#tracking tbody tr:last-child td:last-child").addClass("bg-warning");
+                                else if(result[j].submission[i].status=="accepted")$("#tracking tbody tr:last-child td:last-child").addClass("bg-success");
+                                else if(result[j].submission[i].status=="rejected")$("#tracking tbody tr:last-child td:last-child").addClass("bg-danger");
+                                $("#tracking tbody tr:last-child td:last-child").append("<a href=\""+config.local+
                                     "CR"+year+"Q"+quarter+"/"+
                                     result[j].courseName+"("+result[j].day+")"+"("+result[j].time+")"+"/"+
                                     (i+1)+"_"+result[j].submission[i].dated+result[j].submission[i].datem+result[j].submission[i].datey+"/\">"+
                                     "#"+(i+1)+"_"+result[j].submission[i].dated+result[j].submission[i].datem+result[j].submission[i].datey+"</a>");
-                                $("table tr:last-child td:last-child").append("<pre>"+result[j].submission[i].status+"</pre>");
-                                $("table tr:last-child td:last-child").append("<form method=\"post\" action=\"judge\"></form>");
-                                $("table tr:last-child td:last-child form:last-child").append("<input type=\"hidden\" value=\""+result[j].tutor+"\" name=\"tutor\">");
-                                $("table tr:last-child td:last-child form:last-child").append("<input type=\"hidden\" value=\""+result[j].day+"\" name=\"day\">");
-                                $("table tr:last-child td:last-child form:last-child").append("<input type=\"hidden\" value=\""+result[j].time+"\" name=\"time\">");
-                                $("table tr:last-child td:last-child form:last-child").append("<input type=\"hidden\" value=\""+i+"\" name=\"numberOfSub\">");
-                                $("table tr:last-child td:last-child form:last-child").append("<input type=\"submit\" value=\"AC\" name=\"from\">");
-                                $("table tr:last-child td:last-child form:last-child input:last-child").attr("onclick","window.location=\"mailto:?subject=TO%20(name),"+result[j].courseName+digit(2,i+1)+"%20ACCEPTED\"");
-                                $("table tr:last-child td:last-child form:last-child").append("<input type=\"submit\" value=\"RJ\" name=\"from\">");
-                                $("table tr:last-child td:last-child form:last-child input:last-child").attr("onclick","window.location=\"mailto:?subject=TO%20(name),"+result[j].courseName+digit(2,i+1)+"%20REJECTED\"");
+                                $("#tracking tbody tr:last-child td:last-child").append(" <code>"+result[j].submission[i].status+"</code>");
+                                $("#tracking tbody tr:last-child td:last-child").append("<form method=\"post\" action=\"judge\"></form>");
+                                $("#tracking tbody tr:last-child td:last-child form:last-child").append("<input type=\"hidden\" value=\""+result[j].tutor+"\" name=\"tutor\">");
+                                $("#tracking tbody tr:last-child td:last-child form:last-child").append("<input type=\"hidden\" value=\""+result[j].day+"\" name=\"day\">");
+                                $("#tracking tbody tr:last-child td:last-child form:last-child").append("<input type=\"hidden\" value=\""+result[j].time+"\" name=\"time\">");
+                                $("#tracking tbody tr:last-child td:last-child form:last-child").append("<input type=\"hidden\" value=\""+i+"\" name=\"numberOfSub\">");
+                                $("#tracking tbody tr:last-child td:last-child form:last-child").append("<div class=\"btn-group\"></div>");
+                                $("#tracking tbody tr:last-child td:last-child form:last-child .btn-group").append("<input type=\"submit\" class=\"btn btn-success btn-xs\" value=\"AC\" name=\"from\">");
+                                $("#tracking tbody tr:last-child td:last-child form:last-child input:last-child").attr("onclick","window.location=\"mailto:?subject=TO%20(name),"+result[j].courseName+digit(2,i+1)+"%20ACCEPTED\"");
+                                $("#tracking tbody tr:last-child td:last-child form:last-child .btn-group").append("<input type=\"submit\" class=\"btn btn-danger btn-xs\" value=\"RJ\" name=\"from\">");
+                                $("#tracking tbody tr:last-child td:last-child form:last-child input:last-child").attr("onclick","window.location=\"mailto:?subject=TO%20(name),"+result[j].courseName+digit(2,i+1)+"%20REJECTED\"");
                             }
-                            else $("table tr:last-child").append("<td>-</td>");
+                            else{
+                                $("#tracking tbody tr:last-child").append("<td>-</td>");
+                                $("#tracking tbody tr:last-child td:last-child").addClass("bg-info");
+                            }
                         }
                     }
                     callback($.html());
@@ -152,9 +164,10 @@ var build=function(db,what,callback){
         }
         else if(what=="user"){
             $=cheerio.load(fs.readFileSync(__dirname+"/user.html"));
+            $("form").addClass("form-inline");
             $("form[action=\"file-upload\"]").append(tutorInput()+dayInput()+timeInput()+numberOfSubInput()+
                 " Teach date : "+datedInput()+datemInput()+dateyInput()+
-                "<br><br><input type=\"file\" name=\"file\" multiple required>"+submitInput("Upload File"));
+                "<br><br><input class=\"form-control\" type=\"file\" name=\"file\" multiple required>"+submitInput("Upload File"));
             callback($.html());
         }
     });
