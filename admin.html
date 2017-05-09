@@ -4,6 +4,8 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
         <style>
             th{
                 color:rgb(255,255,255);
@@ -20,6 +22,9 @@
             }
             .time{
                 background-color:rgb(255,138,9);
+            }
+            [data-toggle="collapse"]{
+                cursor: pointer;
             }
         </style>
     </head>
@@ -38,48 +43,154 @@
                 <div class="col-sm-5">column3</div>
             </div>
         </div> -->
-        <div class="table-responsive">
-            <table class="table table-bordered" id="tracking">
-                <thead></thead>
-                <tbody></tbody>
-            </table>
+        <div class="container-fluid" style="margin-top:10pt">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="tracking">
+                    <thead></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
         </div>
-        <br>
-        <div style="background-color:lightblue;padding:10px;padding-bottom:1px;margin-bottom:10px">
-            <form action="update-path" method="post">
-                Update db path : <input class="form-control" type="text" name="path" placeholder="Data path" required> <code>ex. //OtherComputer/folder</code>
-                <input type="submit" class="btn btn-default" value="Change Path">
-            </form>
+        <div class="container" id="message">
+            <!-- <div class="well"></div> -->
         </div>
-        <div style="background-color:lightblue;padding:10px;padding-bottom:1px;margin-bottom:10px">
-            <form action="update-local" method="post">
-                Update local db path : file:///<input class="form-control" type="text" name="path" placeholder="Local data path" required> <code>ex. C:/folder</code>
-                <input type="submit" class="btn btn-default" value="Change Local Path">
-            </form>
+        <div class="container">
+            <div class="panel-group">
+                <div class="panel panel-default">
+                    <div class="panel-heading" data-toggle="collapse" data-target="#update-path">
+                        <div class="panel-title">Update data path</div>
+                    </div>
+                    <div id="update-path" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <form action="update-path" method="post">
+                                <div class="form-group">
+                                    <label class="control-label col-sm-2" for="path">Update db path :</label>
+                                    <div class="col-sm-10">
+                                        <input class="form-control" type="text" name="path" placeholder="Data path" required>
+                                        <span class="help-block">ex. //OtherComputer/folder</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-offset-2 col-sm-10">
+                                        <input type="submit" class="btn btn-default" value="Change Path">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading" data-toggle="collapse" data-target="#update-local">
+                        <div class="panel-title">Update local data path</div>
+                    </div>
+                    <div id="update-local" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <form action="update-local" method="post">
+                                <div class="form-group">
+                                    <label class="control-label col-sm-2" for="path">Update local db path : file:///</label>
+                                    <div class="col-sm-10">
+                                        <input class="form-control" type="text" name="path" placeholder="Local data path" required>
+                                        <span class="help-block">ex. C:/folder</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-offset-2 col-sm-10">
+                                        <input type="submit" class="btn btn-default" value="Change Local Path">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading" data-toggle="collapse" data-target="#update-quarter">
+                        <div class="panel-title">Update year and quarter</div>
+                    </div>
+                    <div id="update-quarter" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <form action="update-quarter" method="post">
+                                <div class="form-group">
+                                    <label class="control-label col-sm-2" for="year">Year :</label>
+                                    <div class="col-sm-10">
+                                        <input class="form-control" type="number" name="year" placeholder="Year" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-sm-2" for="quarter">Quarter :</label>
+                                    <div class="col-sm-10">
+                                        <input class="form-control" type="number" name="quarter" placeholder="Quarter" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-offset-2 col-sm-10">
+                                        <input type="submit" class="btn btn-default" value="Change Quarter/Year">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading" data-toggle="collapse" data-target="#add-course">
+                        <div class="panel-title">Add course</div>
+                    </div>
+                    <div id="add-course" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <form action="add-course" method="post">
+                                <div class="form-group">
+                                    <label class="control-label col-sm-2" for="courseName">Course name :</label>
+                                    <div class="col-sm-10">
+                                        <input class="form-control" type="text" name="courseName" placeholder="Course Name" required>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading" data-toggle="collapse" data-target="#remove-course">
+                        <div class="panel-title">Remove course</div>
+                    </div>
+                    <div id="remove-course" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <form action="remove-course" method="post"></form>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading" data-toggle="collapse" data-target="#edit-course">
+                        <div class="panel-title">Edit course</div>
+                    </div>
+                    <div id="edit-course" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <form action="edit-course" method="post">
+                                <div class="page-header">
+                                    <h4>Old course description</h4>
+                                </div>
+                                <div class="page-header">
+                                    <h4>New course description</h4>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-sm-2" for="courseName">Course name :</label>
+                                    <div class="col-sm-10">
+                                        <input class="form-control" type="text" name="courseName" placeholder="New course name" required>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading" data-toggle="collapse" data-target="#remove-submission">
+                        <div class="panel-title">Remove submission</div>
+                    </div>
+                    <div id="remove-submission" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <form action="remove-submission" method="post"></form>
+                        </div>
+                    </div>
+                </div>
+             </div>
         </div>
-        <div style="background-color:lightblue;padding:10px;padding-bottom:1px;margin-bottom:10px">
-            <form action="update-quarter" method="post">
-                Update year : <input class="form-control" type="number" name="year" placeholder="Year" required>
-                quarter : <input class="form-control" type="number" name="quarter" placeholder="Quarter" required>
-                <input type="submit" class="btn btn-default" value="Change Quarter/Year">
-            </form>
-        </div>
-        <div style="background-color:lightblue;padding:10px;padding-bottom:1px;margin-bottom:10px">
-            <form action="add-course" method="post">
-                <input class="form-control" type="text" name="courseName" placeholder="Course Name" required>
-            </form>
-        </div>
-        <div style="background-color:lightblue;padding:10px;padding-bottom:1px;margin-bottom:10px">
-            <form action="remove-course" method="post"></form>
-        </div>
-        <div style="background-color:lightblue;padding:10px;padding-bottom:1px;margin-bottom:10px">
-            <form action="edit-course" method="post">
-                <input class="form-control" type="text" name="courseName" placeholder="New course name" required>
-            </form>
-        </div>
-        <div style="background-color:lightblue;padding:10px;padding-bottom:1px;margin-bottom:10px">
-            <form action="remove-submission" method="post"></form>
-        </div>
-        <div id="message"></div>
     </body>
 </html>

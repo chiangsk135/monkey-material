@@ -7,102 +7,160 @@ var build=function(db,what,callback){
     var configDB=db.collection("config");
     configDB.findOne({},function(err,config){
         var courseDB=db.collection("CR"+config.year+"Q"+config.quarter);
-        // var courseDB=db.collection("course");
 
-        var tutorInput=function(){
-            var tutor=["third","beng","ya","paan","view","bb","gag","anne","bg","louis","ten","pre","atom","pe/ch"];
-            var $=cheerio.load("<select></select>");
-            $("select").addClass("form-control");
-            $("select").append("<option disabled selected> == Select tutor == </option>");
-            for(var i=0;i<tutor.length;i++){
-                $("select").append("<option>"+tutor[i].toUpperCase()+"</option>");
-                $("select option:last-child").val(tutor[i]);
-            }
-            return $.html();
-        }
-        var dayInput=function(){
-            return "<select class=\"form-control\" name=\"day\" required>"+
-                "<option disabled selected value> == Select day == </option>"+
-                "<option value=\"SAT\">Saturday</option>"+
-                "<option value=\"SUN\">Sunday</option>"+
-            "</select>";
-        }
-        var timeInput=function(){
-            return "<select class=\"form-control\" name=\"time\" required>"+
-                "<option disabled selected value> == Select time == </option>"+
-                "<option value=\"8-10\">8.00-10.00</option>"+
-                "<option value=\"10-12\">10.00-12.00</option>"+
-                "<option value=\"13-15\">13.00-15.00</option>"+
-                "<option value=\"15-17\">15.00-17.00</option>"+
-            "</select>";
-        }
-        var numberOfSubInput=function(){
-            var ret="<select class=\"form-control\" name=\"numberOfSub\" required>"+
-                "<option disabled selected value> == Select # of submission == </option>";
-            for(var i=1;i<=12;i++){
-                ret+="<option value=\""+i+"\">"+i+"</option>";
-            }
-            ret+="</select>";
-            return ret;
-        }
-        var datedInput=function(){
-            var ret="<select class=\"form-control\" name=\"dated\" required>"+
-                "<option disabled selected value> Day </option>";
-            for(var i=1;i<=9;i++){
-                ret+="<option value=\"0"+i+"\">"+i+"</option>";
-            }
-            for(var i=10;i<=31;i++){
-                ret+="<option value=\""+i+"\">"+i+"</option>";
-            }
-            ret+="</select>";
-            return ret;
-        }
-        var datemInput=function(){
-            return "<select class=\"form-control\" name=\"datem\" required>"+
-                "<option disabled selected value> Month </option>"+
-                "<option value=\"01\">January</option>"+
-                "<option value=\"02\">Febuary</option>"+
-                "<option value=\"03\">March</option>"+
-                "<option value=\"04\">April</option>"+
-                "<option value=\"05\">May</option>"+
-                "<option value=\"06\">June</option>"+
-                "<option value=\"07\">July</option>"+
-                "<option value=\"08\">August</option>"+
-                "<option value=\"09\">September</option>"+
-                "<option value=\"10\">October</option>"+
-                "<option value=\"11\">November</option>"+
-                "<option value=\"12\">December</option>"+
-            "</select>";
-        }
-        var dateyInput=function(){
-            return "<select class=\"form-control\" name=\"datey\" required>"+
-                "<option disabled selected value> Year </option>"+
-                "<option value=\"17\">2017</option>"+
-                "<option value=\"18\">2018</option>"+
-            "</select>";
-        }
-        var submitInput=function(val){
-            return "<input type=\"submit\" class=\"btn btn-default\" value=\""+val+"\">";
-        }
         var digit=function(numDigit,x){
             var ret=x.toString();
             while(ret.length<numDigit)ret="0"+ret;
             return ret;
         }
+        var selectInput=function(name,option,placeHolder,label,labelWidth,inputWidth){
+            if(placeHolder==undefined)placeHolder="== Select "+label+" ==";
+            var $=cheerio.load("<label>"+label+" :</label>");
+            $("label").addClass("control-label col-sm-"+labelWidth).attr("for",name);
+            $("label").after("<div></div>");
+            $("div:last-child").addClass("col-sm-"+inputWidth);
+            $("div:last-child").append("<select required></select>");
+            $("select").addClass("form-control").attr("name",name);
+            $("select").append("<option disabled selected>"+placeHolder+"</option>");
+            for(var i=0;i<option.length;i++){
+                $("select").append("<option>"+option[i][0]+"</option>");
+                $("select option:last-child").val(option[i][1]);
+            }
+            return $.html();
+        }
+        var onlySelectInput=function(name,option,placeHolder){
+            var $=cheerio.load("<select required></select>");
+            $("select").addClass("form-control").attr("name",name);
+            $("select").append("<option disabled selected>"+placeHolder+"</option>");
+            for(var i=0;i<option.length;i++){
+                $("select").append("<option>"+option[i][0]+"</option>");
+                $("select option:last-child").val(option[i][1]);
+            }
+            return $.html();
+        }
+        var tutorInput=function(labelWidth,inputWidth){
+            var tutor=["third","beng","ya","paan","view","bb","gag","anne","bg","louis","ten","pre","atom","pe/ch"];
+            var option=[];
+            for(var i=0;i<tutor.length;i++){
+                option.push([tutor[i].toUpperCase(),tutor[i]]);
+            }
+            return selectInput("tutor",option,"Select Tutor","Tutor",labelWidth,inputWidth);
+        }
+        var dayInput=function(labelWidth,inputWidth){
+            var option=[
+                ["Saturday","sat"],
+                ["Sunday","sun"]
+            ];
+            return selectInput("day",option,"Select Day","Day",labelWidth,inputWidth);
+        }
+        var timeInput=function(labelWidth,inputWidth){
+            var option=[
+                ["8.00-10.00","8-10"],
+                ["10.00-12.00","10-12"],
+                ["13.00-15.00","13-15"],
+                ["15.00-17.00","15-17"]
+            ];
+            return selectInput("time",option,"Select Time","Time",labelWidth,inputWidth);
+        }
+        var numberOfSubInput=function(labelWidth,inputWidth){
+            var option=[];
+            for(var i=1;i<=12;i++){
+                option.push([i,i]);
+            }
+            return selectInput("numberOfSub",option,"#","#",labelWidth,inputWidth);
+        }
+        var tdtInput=function(numberOfSub){
+            var $=cheerio.load("<div></div>");
+            $("div").addClass("form-group");
+            if(numberOfSub){
+                $(".form-group").append(tutorInput(2,2));
+                $(".form-group").append(dayInput(1,2));
+                $(".form-group").append(timeInput(1,2));
+                $(".form-group").append(numberOfSubInput(1,1));
+            }
+            else{
+                $(".form-group").append(tutorInput(2,2));
+                $(".form-group").append(dayInput(1,3));
+                $(".form-group").append(timeInput(1,3));
+            }
+            return $.html();
+        }
+        var datedInput=function(){
+            var option=[];
+            for(var i=1;i<=31;i++){
+                option.push([i,digit(2,i)]);
+            }
+            return onlySelectInput("dated",option,"Day");
+        }
+        var datemInput=function(){
+            var option=[
+                ["January","01"],
+                ["Febuary","02"],
+                ["March","03"],
+                ["April","04"],
+                ["May","05"],
+                ["June","06"],
+                ["July","07"],
+                ["August","08"],
+                ["September","09"],
+                ["October","10"],
+                ["November","11"],
+                ["December","12"]
+            ];
+            return onlySelectInput("datem",option,"Month");
+        }
+        var dateyInput=function(){
+            var option=[
+                ["2017","17"],
+                ["2018","18"]
+            ];
+            return onlySelectInput("datey",option,"Year");
+        }
+        var dateInput=function(){
+            var $=cheerio.load("<div></div>");
+            $("div").addClass("form-group");
+            $(".form-group").append("<label>Teach date :</label>");
+            $(".form-group label:last-child").addClass("control-label col-sm-2").attr("for","dated");
+            $(".form-group").append("<div></div>");
+            $(".form-group div:last-child").addClass("col-sm-3");
+            $(".form-group div:last-child").append(datedInput());
+            $(".form-group").append("<div></div>");
+            $(".form-group div:last-child").addClass("col-sm-4");
+            $(".form-group div:last-child").append(datemInput());
+            $(".form-group").append("<div></div>");
+            $(".form-group div:last-child").addClass("col-sm-3");
+            $(".form-group div:last-child").append(dateyInput());
+            return $.html();
+        }
+        var submitInput=function(val){
+            return "<div class=\"form-group\"><div class=\"col-sm-offset-2 col-sm-10\"><input type=\"submit\" class=\"btn btn-default\" value=\""+val+"\"></div></div>";
+        }
+        var compareString=function(x,y){
+            if(x<y)return -1;
+            if(x>y)return 1;
+            return 0;
+        }
 
         if(what=="admin"){
             $=cheerio.load(fs.readFileSync(__dirname+"/admin.html"));
-            $("form").addClass("form-inline");
-            $("form[action=\"add-course\"]").append(tutorInput()+dayInput()+timeInput()+submitInput("Add new course"));
-            $("form[action=\"remove-course\"]").append(tutorInput()+dayInput()+timeInput()+submitInput("Remove course"));
-            $("form[action=\"edit-course\"]").append(tutorInput()+dayInput()+timeInput()+submitInput("Edit course"));
+            $("form").addClass("form-horizontal");
+            $("form[action=\"add-course\"]").append(tdtInput(false)+submitInput("Add new course"));
+            $("form[action=\"remove-course\"]").append(tdtInput(false)+submitInput("Remove course"));
+            $("form[action=\"edit-course\"]").append(tdtInput(false)+"<br>"+submitInput("Edit course"));
             $("form[action=\"edit-course\"] [name=\"tutor\"]").attr("name","newTutor");
             $("form[action=\"edit-course\"] [name=\"day\"]").attr("name","newDay");
             $("form[action=\"edit-course\"] [name=\"time\"]").attr("name","newTime");
-            $("form[action=\"edit-course\"]").prepend("old course : "+tutorInput()+dayInput()+timeInput()+"<br>");
-            $("form[action=\"remove-submission\"]").append(tutorInput()+dayInput()+timeInput()+numberOfSubInput()+submitInput("Remove submission"));
+            $("form[action=\"edit-course\"] .page-header:first-of-type").after(tdtInput(false));
+            $("form[action=\"remove-submission\"]").append(tdtInput(true)+submitInput("Remove submission"));
 
             courseDB.find({}).toArray(function(err,result){
+                result.sort(function(x,y){
+                    if(x.tutor!=y.tutor)return compareString(x.tutor,y.tutor);
+                    if(x.day!=y.day)return compareString(x.day,y.day);
+                    if(x.time=="8-10")return -1;
+                    if(y.time=="8-10")return 1;
+                    if(x.time!=y.time)return compareString(x.time,y.time);
+                });
                 configDB.findOne({},function(err,config){
                     var path=config.path;
                     var year=config.year;
@@ -114,8 +172,8 @@ var build=function(db,what,callback){
                     }
                     $("#tracking thead").append("<tr></tr>");
                     for(var i=0;i<result.length;i++){
-                        $("#tracking thead tr:last-child").append("<th>"+result[i].day+"</th>");
-                        $("#tracking thead tr:last-child th:last-child").addClass(result[i].day.toLowerCase());
+                        $("#tracking thead tr:last-child").append("<th>"+result[i].day.toUpperCase()+"</th>");
+                        $("#tracking thead tr:last-child th:last-child").addClass(result[i].day);
                     }
                     $("#tracking thead").append("<tr></tr>");
                     for(var i=0;i<result.length;i++){
@@ -137,7 +195,7 @@ var build=function(db,what,callback){
                                 else if(result[j].submission[i].status=="rejected")$("#tracking tbody tr:last-child td:last-child").addClass("bg-danger");
                                 $("#tracking tbody tr:last-child td:last-child").append("<a href=\""+config.local+
                                     "CR"+year+"Q"+quarter+"/"+
-                                    result[j].courseName+"("+result[j].day+")"+"("+result[j].time+")"+"/"+
+                                    result[j].courseName+"("+result[j].day.toUpperCase()+")"+"("+result[j].time+")"+"/"+
                                     (i+1)+"_"+result[j].submission[i].dated+result[j].submission[i].datem+result[j].submission[i].datey+"/\">"+
                                     "#"+(i+1)+"_"+result[j].submission[i].dated+result[j].submission[i].datem+result[j].submission[i].datey+"</a>");
                                 $("#tracking tbody tr:last-child td:last-child").append(" <code>"+result[j].submission[i].status+"</code>");
@@ -164,10 +222,9 @@ var build=function(db,what,callback){
         }
         else if(what=="user"){
             $=cheerio.load(fs.readFileSync(__dirname+"/user.html"));
-            $("form").addClass("form-inline");
-            $("form[action=\"file-upload\"]").append(tutorInput()+dayInput()+timeInput()+numberOfSubInput()+
-                " Teach date : "+datedInput()+datemInput()+dateyInput()+
-                "<br><br><input class=\"form-control\" type=\"file\" name=\"file\" multiple required>"+submitInput("Upload File"));
+            $("form").addClass("form-horizontal");
+            $("form[action=\"file-upload\"]").prepend(tdtInput(true)+dateInput());
+            $("form[action=\"file-upload\"]").append(submitInput("Upload File"));
             callback($.html());
         }
     });

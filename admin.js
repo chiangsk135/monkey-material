@@ -65,12 +65,12 @@ var run=function(app,db){
         // Load admin.html+message / Update path in configDB
         app.post('/update-path',function(req,res){
             console.log("[PAGE REQUEST] update-path FROM "+req.ip);
-            // TODO insert if not exists
             configDB.updateOne({},{$set:{path:req.body.path+"/"}},function(){
                 build(db,"admin",function(page){
                     $=cheerio.load(page);
                     configDB.findOne({},function(err,config){
                         $("#message").append("<pre>[Updated] Path = "+config.path+"</pre>");
+                        $("#message").append("<div class=\"alert alert-danger\">Please restart the server to apply changes.</div>");
                         res.send($.html());
                     });
                 });
@@ -79,12 +79,12 @@ var run=function(app,db){
         // Load admin.html+message / Update local in configDB
         app.post('/update-local',function(req,res){
             console.log("[PAGE REQUEST] update-local FROM "+req.ip);
-            // TODO insert if not exists
             configDB.updateOne({},{$set:{local:"file:///"+req.body.path+"/"}},function(){
                 build(db,"admin",function(page){
                     $=cheerio.load(page);
                     configDB.findOne({},function(err,config){
                         $("#message").append("<pre>[Updated] Local = "+config.local+"</pre>");
+                        $("#message").append("<div class=\"alert alert-danger\">Please restart the server to apply changes.</div>");
                         res.send($.html());
                     });
                 });
@@ -99,6 +99,7 @@ var run=function(app,db){
                     configDB.findOne({},function(err,config){
                         $("#message").append("<pre>[Updated] Year    = "+config.year+"</pre>");
                         $("#message").append("<pre>[Updated] Quarter = "+config.quarter+"</pre>");
+                        $("#message").append("<div class=\"alert alert-danger\">Please restart the server to apply changes.</div>");
                         res.send($.html());
                     });
                 });

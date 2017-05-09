@@ -4,9 +4,46 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <style>
+            [data-toggle="collapse"]{
+                cursor: pointer;
+            }
+        </style>
     </head>
     <body>
-        <form action="file-upload" method="post" enctype="multipart/form-data"></form>
-        <div id="message"></div>
+        <div class="jumbotron">
+            <div class="container">
+                <h1>Upload files</h1>
+                <p>Provide your information below.</p>
+            </div>
+        </div>
+        <div class="container">
+            <div class="panel-group">
+                <div class="panel panel-default">
+                    <div class="panel-heading" data-toggle="collapse" data-target="#file-upload">
+                        <div class="panel-title">Upload files</div>
+                    </div>
+                    <div id="file-upload" class="panel-collapse collapse in">
+                        <div class="panel-body">
+                            <form action="file-upload" method="post" enctype="multipart/form-data">
+                                <div class="form-group">
+                                    <div class="col-sm-offset-2 col-sm-10">
+                                        <label class="btn btn-default btn-file">
+                                            Browse file <input type="file" style="display:none" name="file" multiple required>
+                                        </label>
+                                    </div>
+                                </div>
+                                <!-- <input class=\"form-control\" type=\"file\" name=\"file\" multiple required> -->
+                            </form>
+                        </div>
+                    </div>
+                 </div>
+             </div>
+        </div>
+        <div class="container">
+            <div id="message" class="well"></div>
+        </div>
     </body>
 </html>

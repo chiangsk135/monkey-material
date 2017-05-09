@@ -34,12 +34,15 @@ MongoClient.connect("mongodb://127.0.0.1:27017/monkey-material",function(err,db)
         }
         configDB.findOne({},function(err,config){
             var courseDB=db.collection("CR"+config.year+"Q"+config.quarter);
-            // var courseDB=db.collection("course");
             require("./admin.js").run(app,db);
             require("./user.js").run(app,db);
 
             // courseDB.updateOne({tutor:"view",day:"SUN",time:"10-12"},{$set:{submission:[]}});
             // courseDB.updateOne({tutor:"view",day:"SUN",time:"10-12"},{$unset:{NaN:""}});
+            // courseDB.updateMany({day:"SUN"},{$set:{day:"sun"}});
+            // courseDB.updateMany({day:"SAT"},{$set:{day:"sat"}});
+            // courseDB.deleteOne({tutor:null});
+            // courseDB.deleteOne({tutor:"bb"});
             // courseDB.findOne({tutor:"view",day:"SUN",time:"10-12"},function(err,result){
             //     console.log("========");
             //     console.log(result);
