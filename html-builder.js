@@ -185,6 +185,7 @@ var build=function(db,what,callback){
                         $("#tracking thead tr:last-child").append("<th>"+result[i].courseName+"</th>");
                         $("#tracking thead tr:last-child th:last-child").addClass("time");
                     }
+                    $("th").addClass("text-center");
                     for(var i=0;i<12;i++){
                         $("#tracking tbody").append("<tr></tr>");
                         for(var j=0;j<result.length;j++){

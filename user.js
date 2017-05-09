@@ -40,7 +40,7 @@ var run=function(app,db){
                     else{
                         var courseName=result.courseName;
                         newPath+="CR"+year+"Q"+quarter+"/";
-                        newPath+=courseName+"("+day.toUpperCase+")"+"("+time+")"+"/";
+                        newPath+=courseName+"("+day.toUpperCase()+")"+"("+time+")"+"/";
                         newPath+=numberOfSub+"_"+dated+datem+datey+"/";
 
                         build(db,"user",function(page){

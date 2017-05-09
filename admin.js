@@ -156,7 +156,7 @@ var run=function(app,db){
                         $=cheerio.load(page);
                         courseDB.find({tutor:newTutor,day:newDay,time:newTime}).toArray(function(err,result){
                             for(var i=0;i<result.length;i++){
-                                $("#message").append("<pre>CHANGE "+courseName+" "+tutor+" "+day+" "+time+" --> "+result[i].courseName+" "+result[i].tutor+" "+result[i].day+" "+result[i].time+"</pre>");
+                                $("#message").append("<pre>CHANGE "+tutor+" "+day+" "+time+" --> "+result[i].courseName+" "+result[i].tutor+" "+result[i].day+" "+result[i].time+"</pre>");
                                 $("#message").append("<pre>"+result[i].courseName+" "+result[i].tutor+" "+result[i].day+" "+result[i].time+"</pre>");
                                 for(var j=0;j<result[i].submission.length;j++){
                                     $("#message").append("<pre>  #"+(j+1)+" : "+result[i].submission[j].status+"</pre>");

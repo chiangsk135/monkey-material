@@ -1,0 +1,19 @@
+th{
+    color:rgb(255,255,255);
+    font-size:120%;
+}
+.tutor{
+    background-color:rgb(49,193,193);
+}
+.sat{
+    background-color:rgb(128,82,121);
+}
+.sun{
+    background-color:rgb(225,86,63);
+}
+.time{
+    background-color:rgb(255,138,9);
+}
+[data-toggle="collapse"]{
+    cursor: pointer;
+}

@@ -9,6 +9,7 @@ var assert=require('assert');
 var app=express();
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(multer({dest:"/tmp/"}).any());
+app.use(express.static("public"));
 app.listen(80);
 
 MongoClient.connect("mongodb://127.0.0.1:27017/monkey-material",function(err,db){
