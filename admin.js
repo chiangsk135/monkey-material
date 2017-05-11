@@ -5,6 +5,33 @@ var run=function(app,db){
     var fs=require("fs-extra");
     var assert=require('assert');
 
+    var removeDir=function(dirPath,selfDelete,exception){
+        try{
+            var content = fs.readdirSync(dirPath);
+            console.log(content);
+        }catch(err){
+            console.error(err);
+            $("#message").append("<pre>"+err.message+"</pre>");
+            return err;
+        }
+        if(content.length>0){
+            for(var i=0;i<content.length;i++){
+                var filePath=dirPath+content[i];
+                if(fs.statSync(filePath).isFile()){
+                    if(exception.indexOf(filePath)==-1){
+                        fs.unlinkSync(filePath);
+                        console.log("[FILE DELETED] "+filePath);
+                    }
+                }
+                else removeDir(filePath+"/",true,exception);
+            }
+        }
+        if(selfDelete){
+            fs.rmdirSync(dirPath);
+            console.log("[DIRECTORY DELETED] "+dirPath);
+        }
+    };
+
     var configDB=db.collection("config");
     configDB.findOne({},function(err,config){
         var courseDB=db.collection("CR"+config.year+"Q"+config.quarter);
@@ -50,16 +77,32 @@ var run=function(app,db){
                 );
             }
             else if(req.body.from=="RJ"){
-                courseDB.updateOne({tutor:req.body.tutor,day:req.body.day,time:req.body.time},
-                    {$set:{["submission."+req.body.numberOfSub+".status"]:"rejected"}},
-                    function(){
-                        build(db,"admin",function(page){
-                            $=cheerio.load(page);
-                            $("#message").append("<pre>"+req.body.tutor+" "+req.body.day+" "+req.body.time+" #"+req.body.numberOfSub+" is rejected</pre>");
-                            res.send($.html());
-                        });
-                    }
-                );
+                configDB.findOne({},function(err,config){
+                    var newPath=config.path;
+                    var year=config.year;
+                    var quarter=config.quarter;
+                    // var newPath=__dirname+"/asdf/";//For testing purpose
+                    var tutor=req.body.tutor,day=req.body.day,time=req.body.time;
+                    var numberOfSub=req.body.numberOfSub;
+                    courseDB.findOne({tutor:tutor,day:day,time:time},function(err,result){
+                        var courseName=result.courseName;
+                        var dated=result.submission[numberOfSub].dated,datem=result.submission[numberOfSub].datem,datey=result.submission[numberOfSub].datey;
+                        newPath+="CR"+year+"Q"+quarter+"/";
+                        newPath+=courseName+"("+day.toUpperCase()+")"+"("+time+")"+"/";
+                        newPath+=(parseInt(numberOfSub)+1)+"_"+dated+datem+datey+"/";
+                        removeDir(newPath,false,[]);
+                        courseDB.updateOne({tutor:tutor,day:day,time:time},
+                            {$set:{["submission."+numberOfSub+".status"]:"rejected"}},
+                            function(){
+                                build(db,"admin",function(page){
+                                    $=cheerio.load(page);
+                                    $("#message").append("<pre>"+tutor+" "+day+" "+time+" #"+numberOfSub+" is rejected</pre>");
+                                    res.send($.html());
+                                });
+                            }
+                        );
+                    });
+                });
             }
         });
         // Load admin.html+message / Update path in configDB
@@ -70,20 +113,6 @@ var run=function(app,db){
                     $=cheerio.load(page);
                     configDB.findOne({},function(err,config){
                         $("#message").append("<pre>[Updated] Path = "+config.path+"</pre>");
-                        $("#message").append("<div class=\"alert alert-danger\">Please restart the server to apply changes.</div>");
-                        res.send($.html());
-                    });
-                });
-            });
-        });
-        // Load admin.html+message / Update local in configDB
-        app.post('/update-local',function(req,res){
-            console.log("[PAGE REQUEST] update-local FROM "+req.ip);
-            configDB.updateOne({},{$set:{local:"file:///"+req.body.path+"/"}},function(){
-                build(db,"admin",function(page){
-                    $=cheerio.load(page);
-                    configDB.findOne({},function(err,config){
-                        $("#message").append("<pre>[Updated] Local = "+config.local+"</pre>");
                         $("#message").append("<div class=\"alert alert-danger\">Please restart the server to apply changes.</div>");
                         res.send($.html());
                     });

@@ -94,18 +94,18 @@ var build=function(db,what,callback){
         }
         var datemInput=function(){
             var option=[
-                ["January","01"],
-                ["Febuary","02"],
-                ["March","03"],
-                ["April","04"],
-                ["May","05"],
-                ["June","06"],
-                ["July","07"],
-                ["August","08"],
-                ["September","09"],
-                ["October","10"],
-                ["November","11"],
-                ["December","12"]
+                ["1 - January","01"],
+                ["2 - Febuary","02"],
+                ["3 - March","03"],
+                ["4 - April","04"],
+                ["5 - May","05"],
+                ["6 - June","06"],
+                ["7 - July","07"],
+                ["8 - August","08"],
+                ["9 - September","09"],
+                ["10 - October","10"],
+                ["11 - November","11"],
+                ["12 - December","12"]
             ];
             return onlySelectInput("datem",option,"Month");
         }
@@ -142,7 +142,7 @@ var build=function(db,what,callback){
         }
 
         if(what=="admin"){
-            $=cheerio.load(fs.readFileSync(__dirname+"/admin.html"));
+            var $=cheerio.load(fs.readFileSync(__dirname+"/admin.html"));
             $("form").addClass("form-horizontal");
             $("form[action=\"add-course\"]").append(tdtInput(false)+submitInput("Add new course"));
             $("form[action=\"remove-course\"]").append(tdtInput(false)+submitInput("Remove course"));
@@ -194,7 +194,7 @@ var build=function(db,what,callback){
                                 if(result[j].submission[i].status=="pending")$("#tracking tbody tr:last-child td:last-child").addClass("bg-warning");
                                 else if(result[j].submission[i].status=="accepted")$("#tracking tbody tr:last-child td:last-child").addClass("bg-success");
                                 else if(result[j].submission[i].status=="rejected")$("#tracking tbody tr:last-child td:last-child").addClass("bg-danger");
-                                $("#tracking tbody tr:last-child td:last-child").append("<a href=\""+config.local+
+                                $("#tracking tbody tr:last-child td:last-child").append("<a href=\"file:///"+config.path+
                                     "CR"+year+"Q"+quarter+"/"+
                                     result[j].courseName+"("+result[j].day.toUpperCase()+")"+"("+result[j].time+")"+"/"+
                                     (i+1)+"_"+result[j].submission[i].dated+result[j].submission[i].datem+result[j].submission[i].datey+"/\">"+
@@ -222,7 +222,7 @@ var build=function(db,what,callback){
             });
         }
         else if(what=="user"){
-            $=cheerio.load(fs.readFileSync(__dirname+"/user.html"));
+            var $=cheerio.load(fs.readFileSync(__dirname+"/user.html"));
             $("form").addClass("form-horizontal");
             $("form[action=\"file-upload\"]").prepend(tdtInput(true)+dateInput());
             $("form[action=\"file-upload\"]").append(submitInput("Upload File"));
